@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Point to point</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry"></script>
+    <script src="js/main.js"></script>
+  </head>
+  <body>
+    <div id="map-canvas" style="float:left;width:70%; height:100%"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%">
+    <p><input type="checkbox" id="followRoads" checked="true">follow Roads</input><p>
+    <p><button onclick="deleteLastPoint()">delete last point</button></p>
+    <p><button onclick="clearAll()">clear all</button></p>
+    <p>Total Distance: <span id="total"></span></p>
+    <p>Elevation: <span id="elevation"></span></p>
+    </div>
+  </body>
+</html>

@@ -82,8 +82,6 @@ function initialize() {
             thisSegment.startMarker.setPosition(leg.start_location);
             thisSegment.endMarker.setPosition(leg.end_location);
 
-            thisSegment.distance = leg.distance.value;
-
             /* when the start pos has moved and is the end point of
                a previous segment that doesn't follow roads, we have to
                update it: */
@@ -94,6 +92,20 @@ function initialize() {
               }
             }
             updateDistance();
+
+            /* user may drag the segment, changing the length: */
+            directionsDisplay.segment = thisSegment;
+            google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+              var segment = directionsDisplay.segment;
+              /* looks like a totally new object DirectionsResult will be created,
+                 so the leg will be not valid any more: */
+              var result = directionsDisplay.getDirections();
+              var route = result.routes[0];
+              var leg = route.legs[0];
+              segment.leg = leg;
+              updateDistance();
+            });
+
           }
         });
       } else {

@@ -1,6 +1,6 @@
 var rendererOptions = {
   draggable: true,
-  polylineOptions: {strokeColor: 'red', strokeWeight: 1 },
+  polylineOptions: {strokeColor: 'red', strokeWeight: 2 },
   preserveViewport: true,
   suppressMarkers: true,
 };
@@ -25,6 +25,7 @@ Segment.prototype.getDistance = function() {
 
 var currentSegment = null;
 var segments = [];
+var path = [];
 
 var totalDistance = 0.0;
 
@@ -72,8 +73,6 @@ function initialize() {
           if (status == google.maps.DirectionsStatus.OK) {
             var thisSegment = segments[segments.length-1];
 
-            thisSegment.directionsDisplay = directionsDisplay;
-
             directionsDisplay.setDirections(response);
             var route = response.routes[0];
             var leg = route.legs[0];
@@ -95,6 +94,7 @@ function initialize() {
 
             /* user may drag the segment, changing the length: */
             directionsDisplay.segment = thisSegment;
+            thisSegment.directionsDisplay = directionsDisplay;
             google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
               var segment = directionsDisplay.segment;
               /* looks like a totally new object DirectionsResult will be created,
@@ -157,7 +157,7 @@ function updateSegmentNoFollow(seg) {
   if (seg.line != null) {
     seg.line.setMap(null);
   }
-  seg.line = new google.maps.Polyline({path: points, map: map, strokeWeight: 1, strokeColor: 'blue' });
+  seg.line = new google.maps.Polyline({path: points, map: map, strokeWeight: 2, strokeColor: 'blue' });
 
   seg.distance = google.maps.geometry.spherical.computeLength(points);
 }
@@ -172,6 +172,25 @@ function updateDistance() {
    document.getElementById('total').innerHTML =
      (totalDistance/1000.0).toFixed(2) + ' km / ' + 
      (totalDistance/1609.34).toFixed(2) + ' miles';
+}
+
+function updatePath() {
+  var segment;
+
+  for (i = 0; i < segments.length; i++) {
+    var segment = segments[i];
+    if (segment.followRoads) {
+      for (j = 0; j < segments.leg.steps.length; j++) {
+        var step = segments.leg.steps[j];
+        for (k = 0; k < step.path.length; k++) {
+          path.push(step.path[k]);
+        }
+      }
+    }
+  }
+}
+
+function updateElevation() {
 }
 
 function destroyLastSegment(segment) {
